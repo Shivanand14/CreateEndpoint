@@ -30,8 +30,20 @@ function sendJSON(res, status, payload) {
   res.writeHead(status, {
     'Content-Type': 'application/json',
     'Content-Length': Buffer.byteLength(body, 'utf8'),
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Authorization, Content-Type',
   });
   res.end(body);
+}
+
+function sendOptions(res) {
+  res.writeHead(204, {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+  });
+  res.end();
 }
 
 function normalizeEmail(value) {
@@ -198,6 +210,11 @@ async function handleUsers(req, res) {
 }
 
 const server = http.createServer(async (req, res) => {
+  if (req.method === 'OPTIONS') {
+    sendOptions(res);
+    return;
+  }
+
   if (req.method === 'POST' && (req.url === '/register' || req.url === '/auth')) {
     await handleRegister(req, res);
     return;

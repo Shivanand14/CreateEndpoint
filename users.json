@@ -30,5 +30,21 @@
     "name": "Test User",
     "createdAt": "2026-04-20T10:04:48.036Z",
     "lastLogin": "2026-04-20T10:05:52.761Z"
+  },
+  {
+    "id": 1776681760990,
+    "email": "testuser2@example.com",
+    "passwordHash": "$2b$10$nYHBL8ZdzLvQrjOUf7kmj.Pcn8iJ58.SnAtghWFbeZNvg5AZxOAo2",
+    "name": "Test User",
+    "createdAt": "2026-04-20T10:42:40.986Z",
+    "updatedAt": "2026-04-20T10:42:40.986Z"
+  },
+  {
+    "id": 1776681788137,
+    "email": "test@test.com",
+    "passwordHash": "$2b$10$F/i3Sf6Y.ShRb6JGygcVHOcneiL77HfNHidBvf6yjaUdRI/cb.GjO",
+    "name": "test",
+    "createdAt": "2026-04-20T10:43:08.137Z",
+    "updatedAt": "2026-04-20T10:43:08.137Z"
   }
 ]
