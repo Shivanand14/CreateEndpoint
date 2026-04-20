@@ -5,7 +5,7 @@
     "password": "secret",
     "name": "Test User",
     "createdAt": "2026-04-20T09:43:31.903Z",
-    "lastLogin": "2026-04-20T09:43:31.903Z"
+    "lastLogin": "2026-04-20T10:06:46.161Z"
   },
   {
     "id": 1776678251404,
@@ -14,5 +14,21 @@
     "name": "Test User",
     "createdAt": "2026-04-20T09:44:11.404Z",
     "lastLogin": "2026-04-20T09:44:11.404Z"
+  },
+  {
+    "id": 1776679069779,
+    "email": "user2@example.com",
+    "password": "secret",
+    "name": "Test User",
+    "createdAt": "2026-04-20T09:57:49.778Z",
+    "lastLogin": "2026-04-20T10:04:30.463Z"
+  },
+  {
+    "id": 1776679488037,
+    "email": "user3@example.com",
+    "password": "secret",
+    "name": "Test User",
+    "createdAt": "2026-04-20T10:04:48.036Z",
+    "lastLogin": "2026-04-20T10:05:52.761Z"
   }
 ]

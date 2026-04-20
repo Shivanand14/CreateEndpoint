@@ -30,6 +30,26 @@ function sendJSON(res, status, payload) {
   res.end(body);
 }
 
+function normalizeEmail(value) {
+  return typeof value === 'string' ? value.trim().toLowerCase() : '';
+}
+
+function buildUserRecord(body) {
+  const now = new Date().toISOString();
+  const email = normalizeEmail(body.email);
+  const { password, name, ...extraFields } = body;
+
+  return {
+    id: Date.now(),
+    email,
+    password,
+    name: name || null,
+    createdAt: now,
+    lastLogin: now,
+    ...extraFields,
+  };
+}
+
 async function handleAuth(req, res) {
   const chunks = [];
   for await (const chunk of req) {
@@ -44,7 +64,15 @@ async function handleAuth(req, res) {
     return;
   }
 
-  const { email, password, name } = body;
+  const email = normalizeEmail(body.email);
+  const password = body.password;
+  const name = body.name;
+  const extraFields = { ...body };
+  delete extraFields.email;
+  delete extraFields.password;
+  delete extraFields.name;
+  delete extraFields.register;
+
   if (!email || !password) {
     sendJSON(res, 400, { error: 'email and password are required' });
     return;
@@ -52,37 +80,13 @@ async function handleAuth(req, res) {
 
   const users = await loadUsers();
   const existing = users.find((u) => u.email === email);
-  const now = new Date().toISOString();
 
   if (existing) {
-    if (existing.password !== password) {
-      sendJSON(res, 401, { error: 'Invalid credentials' });
-      return;
-    }
-    existing.name = name || existing.name;
-    existing.lastLogin = now;
-    await saveUsers(users);
-    sendJSON(res, 200, {
-      message: 'User authenticated',
-      user: {
-        id: existing.id,
-        email: existing.email,
-        name: existing.name,
-        createdAt: existing.createdAt,
-        lastLogin: existing.lastLogin,
-      },
-    });
+    sendJSON(res, 409, { error: 'Duplicate request received. User already registered.' });
     return;
   }
 
-  const newUser = {
-    id: Date.now(),
-    email,
-    password,
-    name: name || null,
-    createdAt: now,
-    lastLogin: now,
-  };
+  const newUser = buildUserRecord({ email, password, name, ...extraFields });
   users.push(newUser);
   await saveUsers(users);
 
