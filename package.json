@@ -1,0 +1,13 @@
+{
+  "name": "endpoint-auth-api",
+  "version": "1.0.0",
+  "description": "Simple user auth API with JSON storage, password hashing, and JWT.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "jsonwebtoken": "^9.0.0"
+  }
+}

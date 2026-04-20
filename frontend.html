@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Auth API Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 24px; max-width: 720px; margin: auto; }
+    h1, h2 { margin-top: 1.5rem; }
+    form { margin-bottom: 1.5rem; padding: 16px; border: 1px solid #ddd; border-radius: 8px; }
+    label { display: block; margin-bottom: 0.5rem; }
+    input { width: 100%; padding: 8px; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px; }
+    button { padding: 10px 16px; border: none; border-radius: 4px; background: #0057e7; color: white; cursor: pointer; }
+    button:hover { background: #0045b8; }
+    pre { background: #f6f6f6; padding: 12px; border-radius: 6px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1>User Auth API Demo</h1>
+  <p>Open this file in your browser and use the forms to call the auth API running on <code>http://localhost:3000</code>.</p>
+
+  <form id="registerForm">
+    <h2>Register</h2>
+    <label>
+      Email
+      <input type="email" name="email" required />
+    </label>
+    <label>
+      Password
+      <input type="password" name="password" required />
+    </label>
+    <label>
+      Name
+      <input type="text" name="name" />
+    </label>
+    <button type="submit">Register</button>
+  </form>
+
+  <form id="loginForm">
+    <h2>Login</h2>
+    <label>
+      Email
+      <input type="email" name="email" required />
+    </label>
+    <label>
+      Password
+      <input type="password" name="password" required />
+    </label>
+    <button type="submit">Login</button>
+  </form>
+
+  <section>
+    <h2>Profile</h2>
+    <button id="meButton">Get /me</button>
+  </section>
+
+  <section>
+    <h2>Output</h2>
+    <pre id="output">Ready.</pre>
+  </section>
+
+  <script>
+    const output = document.getElementById('output');
+    let token = null;
+
+    function showResult(value) {
+      output.textContent = JSON.stringify(value, null, 2);
+    }
+
+    async function postJson(url, data) {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const text = await res.text();
+      try {
+        return { status: res.status, body: JSON.parse(text) };
+      } catch {
+        return { status: res.status, body: text };
+      }
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      const data = {
+        email: formData.get('email'),
+        password: formData.get('password'),
+        name: formData.get('name'),
+      };
+      const result = await postJson('http://localhost:3000/register', data);
+      showResult(result);
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      const data = {
+        email: formData.get('email'),
+        password: formData.get('password'),
+      };
+      const result = await postJson('http://localhost:3000/login', data);
+      if (result.body && result.body.token) {
+        token = result.body.token;
+      }
+      showResult(result);
+    });
+
+    document.getElementById('meButton').addEventListener('click', async () => {
+      if (!token) {
+        showResult({ error: 'No token available. Login first.' });
+        return;
+      }
+      const res = await fetch('http://localhost:3000/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const body = await res.json();
+      showResult({ status: res.status, body });
+    });
+  </script>
+</body>
+</html>
